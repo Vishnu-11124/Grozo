@@ -1,10 +1,15 @@
-import React from 'react'
+import { Outlet } from 'react-router-dom'
 
 const AppLayout = () => {
   return (
-    <div>
-      
-    </div>
+    <>
+    <p>Navbar</p>
+    <main>
+      <Outlet/>
+    </main>
+    <p>Footer</p>
+    <p>CartSidebar</p>
+    </>
   )
 }
 
