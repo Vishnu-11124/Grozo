@@ -1,9 +1,9 @@
-import { ArrowUpRightIcon, BikeIcon, ChevronDownIcon, LogOut, LogOutIcon, MapPinIcon, MenuIcon, PackageIcon, SearchIcon, ShieldIcon, ShoppingCartIcon, UserIcon, XIcon } from "lucide-react"
-import { useState } from "react"
+import { ArrowUpRightIcon, BikeIcon, ChevronDownIcon, LogOutIcon, MapPinIcon, PackageIcon, SearchIcon, ShieldIcon, ShoppingCartIcon, UserIcon, XIcon } from "lucide-react"
+import React,{ useState } from "react"
 import { useNavigate, Link } from "react-router-dom"
 
 const Navbar = () => {
-    const user: any = null
+    const user: any = { name: "John Doe", email: "john@gmai.com", isAdmin: true}
 
     const {cartCount, setIsCartOpen} = {
         cartCount: 6,
@@ -12,6 +12,19 @@ const Navbar = () => {
     const [searchQuery, setSearchQuery] = useState("")
     const [userMenuOpen, setUserMenuOpen] = useState(false)
     const navigate = useNavigate()
+
+    const handleSearch = (e: React.SubmitEvent) => {
+        e.preventDefault()
+    if(searchQuery.trim()){
+        navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`)
+        setSearchQuery("")
+    }
+    }
+
+    const handleLogout = () => {
+        setUserMenuOpen(false)
+        navigate("/login")
+    }
 
   return (
     <nav className="sticky top-0 z-50 border-b border-[#e4ede8] bg-white">
@@ -32,14 +45,14 @@ const Navbar = () => {
             </div>
         </div>
 
-        <form className="flex flex-1 max-w-sm">
+        <form onSubmit={handleSearch} className=" hidden md:flex flex-1 max-w-sm">
             <div className="flex w-full items-center gap-2 rounded-xl border border-[#d8e8de] bg-[#f7f5f0] px-3 py-2 focus-within:border-[#2d6a4a] focus-within:ring-2 focus-within:ring-[#2d6a4a]/10 transition">
                 <SearchIcon size={16} className="shrink-0 text-[#9abfaa]" />
                 <input
                   type="text"
                   placeholder="Search for groceries..."
                   value={searchQuery}
-                  onChange={(e)=> e.target.value}
+                  onChange={(e)=> setSearchQuery(e.target.value)}
                   className="w-full bg-transparent text-sm text-[#1a2e22] placeholder-[#b8d0c0] outline-none"
                 />
             </div>
@@ -78,11 +91,7 @@ const Navbar = () => {
                             <Link to="/login" className="flex items-center gap-1.5 rounded-xl bg-[#1e3a2f] px-4 py-2 text-sm font-medium text-white hover:bg-[#2d6a4a] transition">
                               <UserIcon size={14} />Sign In
                             </Link>
-                            {
-                                userMenuOpen
-                                  ? <XIcon size={20} className="cursor-pointer text-[#3a5a46]" onClick={() => setUserMenuOpen(!userMenuOpen)} />
-                                  : <MenuIcon size={20} className="cursor-pointer text-[#3a5a46]" onClick={() => setUserMenuOpen(!userMenuOpen)}/>
-                            }
+                            
                         </div>
                     )
                 }
@@ -143,7 +152,9 @@ const Navbar = () => {
                                     {
                                         user && (
                                             <div className="mt-1 border-t border-[#e4ede8] pt-1">
-                                                <button className="flex w-full items-center gap-2 rounded-lg px-2 py-2 text-sm text-red-500 hover:bg-red-50 transition">
+                                                <button
+                                                onClick={handleLogout}
+                                                 className="flex w-full items-center gap-2 rounded-lg px-2 py-2 text-sm text-red-500 hover:bg-red-50 transition">
                                                     <LogOutIcon size={15} /> Logout
                                                 </button>
                                             </div>
