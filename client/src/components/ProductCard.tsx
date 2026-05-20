@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom"
 import type { Product } from "../types/index"
-import { Star } from "lucide-react"
+import { Plus, Star } from "lucide-react"
 
 interface ProductCardProps {
     product: Product
@@ -36,12 +36,30 @@ const ProductCard = ({ product }: ProductCardProps) => {
         <h3 className="truncate text-sm font-semibold text-[#1a2e22]">{product?.name}</h3>
 
         {product?.rating > 0 && (
-          <div className="mt-1.5 flex items-center gap-1">
+          <div className="mt-1 flex items-center gap-1">
             <Star size={12} className="fill-[#f59e0b] text-[#f59e0b]" />
             <span className="text-xs font-medium text-[#3a5a46]">{product?.rating}</span>
             <span className="text-xs text-[#9abfaa]">({product?.reviewCount})</span>
           </div>
         )}
+
+        <div className="mt-2.5 flex items-center justify-between">
+          <div className="flex flex-col">
+            <div className="flex items-baseline gap-1">
+              <span className="text-base font-bold text-[#1e3a2f]">${product?.price.toFixed(1)}</span>
+              <span className="text-[11px] text-[#9abfaa]">/{product?.unit}</span>
+            </div>
+            {product?.originalPrice > product?.price && (
+              <span className="text-[11px] text-[#b8d0c0] line-through">${product?.originalPrice.toFixed(1)}</span>
+            )}
+          </div>
+          <button
+            onClick={(e) => e.stopPropagation()}
+            className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#1e3a2f] text-white transition hover:bg-[#2d6a4a] active:scale-95"
+          >
+            <Plus size={16} />
+          </button>
+        </div>
       </div>
     </div>
   )
