@@ -1,17 +1,18 @@
 import { ArrowUpRightIcon, BikeIcon, ChevronDownIcon, LogOutIcon, MapPinIcon, PackageIcon, SearchIcon, ShieldIcon, ShoppingCartIcon, UserIcon, XIcon } from "lucide-react"
 import React,{ useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
 import { useNavigate, Link } from "react-router-dom"
+import { toggleCart } from "../redux/features/cart/cartSice"
 
 const Navbar = () => {
+
+    const cartCount = useSelector((state: any) => state.cart.items.length) || 0
     const user: any = { name: "John Doe", email: "john@gmai.com", isAdmin: true}
 
-    const {cartCount, setIsCartOpen} = {
-        cartCount: 6,
-        setIsCartOpen: (_data: any) => {}
-    }
     const [searchQuery, setSearchQuery] = useState("")
     const [userMenuOpen, setUserMenuOpen] = useState(false)
     const navigate = useNavigate()
+    const dispatch = useDispatch()
 
     const handleSearch = (e: React.SubmitEvent) => {
         e.preventDefault()
@@ -60,7 +61,7 @@ const Navbar = () => {
 
         <div className="flex items-center gap-2">
             <button
-              onClick={() => setIsCartOpen(true)}
+              onClick={() => dispatch(toggleCart())}
               className="relative flex h-9 w-9 items-center justify-center rounded-xl border border-[#d8e8de] bg-[#f7f5f0] text-[#3a5a46] hover:bg-[#e4ede8] transition"
             >
                 <ShoppingCartIcon size={18} />
