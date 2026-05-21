@@ -2,7 +2,7 @@ import { ArrowUpRightIcon, BikeIcon, ChevronDownIcon, LogOutIcon, MapPinIcon, Pa
 import React,{ useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useNavigate, Link } from "react-router-dom"
-import { toggleCart } from "../redux/features/cart/cartSice"
+import { toggleCart } from "../redux/features/cart/cartSlice"
 
 const Navbar = () => {
 

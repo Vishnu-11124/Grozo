@@ -1,5 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit"
-import cartReducer from "./features/cart/cartSice"
+import cartReducer from "./features/cart/cartSlice"
 
 import { saveCartToLocalStorage } from "../utils/cartStorage"
 

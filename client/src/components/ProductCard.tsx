@@ -1,6 +1,8 @@
 import { useNavigate } from "react-router-dom"
 import type { Product } from "../types/index"
 import { Plus, Star } from "lucide-react"
+import { useDispatch } from "react-redux"
+import { addToCart } from "../redux/features/cart/cartSlice"
 
 interface ProductCardProps {
     product: Product
@@ -8,6 +10,12 @@ interface ProductCardProps {
 
 const ProductCard = ({ product }: ProductCardProps) => {
     const navigate = useNavigate()
+    const dispatch = useDispatch()
+
+  const handleAddToCart = (e: React.MouseEvent, product:Product) =>{
+    e.stopPropagation()
+    dispatch(addToCart(product))
+  }  
 
   return (
     <div
@@ -54,7 +62,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
             )}
           </div>
           <button
-            onClick={(e) => e.stopPropagation()}
+            onClick={(e) => handleAddToCart(e,product) }
             className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#1e3a2f] text-white transition hover:bg-[#2d6a4a] active:scale-95"
           >
             <Plus size={16} />
