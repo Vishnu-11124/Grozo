@@ -19,7 +19,10 @@ const ProductCard = ({ product }: ProductCardProps) => {
 
   return (
     <div
-      onClick={() => navigate(`/products/${product._id}`)}
+      onClick={() => {
+        navigate(`/products/${product._id}`)
+        window.scrollTo(0, 0)
+      }}
       className="group cursor-pointer overflow-hidden rounded-2xl border border-[#e4ede8] bg-white transition hover:shadow-md hover:border-[#b8ddc8]"
     >
       {/* Image */}
