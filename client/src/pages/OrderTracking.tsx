@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from "react-router-dom"
 import type { Order } from "../types"
 import { useState } from "react"
-import { ArrowLeftIcon } from "lucide-react"
+import { ArrowLeftIcon, MapPinIcon, PhoneIcon } from "lucide-react"
 import OrderOTP from "../components/OrderTracking/OrderOTP"
 import LiveMap from "../components/OrderTracking/LiveMap"
 import OrderTimeLine from "../components/OrderTracking/OrderTimeLine"
@@ -259,9 +259,81 @@ const OrderTracking = () => {
             <OrderOTP  order={orderData}/>
             <LiveMap order={orderData} liveLocation={liveLocation} />
             <OrderTimeLine order={orderData} />
+            {
+              orderData.deliveryPartner && orderData.status  !== "Delivered" && orderData.status !== "Cancelled" && (
+                <div>
+                  <div>
+                    <div>
+                      <span>
+                        {orderData?.deliveryPartner?.name.charAt(0)}
+                      </span>
+                    </div>
+                    <div>
+                      <p>{orderData?.deliveryPartner?.name}</p>
+                      <p>{orderData?.deliveryPartner?.vehicleType} Delivery Partner</p>
+                    </div>
+                  </div>
+                  <a href={`tel:${orderData?.deliveryPartner?.phone}`}>
+                    <PhoneIcon />
+                  </a>
+                </div>
+              )
+            }
           </div>
           {/* right */}
           <div>
+            {/* address */}
+            <div>
+              <h3>
+                <MapPinIcon /> Delivery Address
+              </h3>
+              <p>
+                {orderData?.shippingAddress.label}
+                <br />
+                {orderData?.shippingAddress.address}
+                <br />
+                {orderData?.shippingAddress.city},
+                {orderData?.shippingAddress.state}
+                {orderData?.shippingAddress.zip}
+              </p>
+            </div>
+
+            <div>
+              <h3>Items ({orderData?.items.length})</h3>
+              <div>
+                {orderData?.items.map((item, i) => (
+                  <div key={i}>
+                    <img src={item?.image} alt={item?.name} />
+                    <div>
+                      <p>{item?.name}</p>
+                      <p>x{item?.quantity}</p>
+                    </div>
+                    <span>
+                      ${(item?.price * item?.quantity).toFixed(2)}
+                    </span>
+                  </div>
+                ))}
+              </div>
+              <div>
+                <div>
+                  <span>Subtotal</span>
+                  <span>${orderData?.subtotal.toFixed(2)}</span>
+                </div>
+                <div>
+                  <span>Delivery Fee</span>
+                  <span>{orderData?.deliveryFee === 0 ? "Free" : `$${orderData?.deliveryFee.toFixed(2)}`}</span>
+                </div>
+                <div>
+                  <span>Tax</span>
+                  <span>${orderData?.tax.toFixed(2)}</span>
+                </div>
+                <hr />
+                <div>
+                  <span>Total Amount</span>
+                  <span>${orderData?.total.toFixed(2)}</span>
+                </div>
+              </div>
+            </div>
 
           </div>
         </div>
