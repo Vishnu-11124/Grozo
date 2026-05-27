@@ -364,9 +364,9 @@ const MyOrders = () => {
                 <div className="mb-4 flex items-center gap-2 overflow-hidden">
                   {order.items
                     .slice(0, 4)
-                    .map((item) => (
+                    .map((item,i) => (
                       <img
-                        key={item._id}
+                        key={i}
                         src={item.image}
                         alt={item.name}
                         className="h-16 w-16 rounded-xl border object-cover"
