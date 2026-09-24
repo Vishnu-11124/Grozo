@@ -73,3 +73,44 @@ export const registerUser = asyncHandler(
     );
   },
 );
+
+export const loginUser = asyncHandler(async (req: Request, res: Response) => {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    throw new ApiError(400, "Please provide required fields");
+  }
+
+  const normalizedEmail = email.trim().toLowerCase();
+
+  if (!isValidEmail(normalizedEmail)) {
+    throw new ApiError(400, "Invalid email format");
+  }
+
+  const existingUser = await prisma.user.findUnique({
+    where: { email: normalizedEmail },
+  });
+  if (!existingUser) {
+    throw new ApiError(400, "User doesn't exists with this email");
+  }
+
+  const passwordMatch = await bcrypt.compare(
+    password.trim(),
+    existingUser.password,
+  );
+
+  if (!passwordMatch) {
+    throw new ApiError(404, "The password doesn't match");
+  }
+
+  const token = generateToken(existingUser.id);
+
+  const { password: _, ...userData } = existingUser;
+  const userDetails = {
+    ...userData,
+    token,
+  };
+
+  res
+    .status(200)
+    .json(new ApiResponse(200, userDetails, "User login successfully"));
+});
