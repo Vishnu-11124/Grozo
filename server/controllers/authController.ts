@@ -91,6 +91,7 @@ export const loginUser = asyncHandler(async (req: Request, res: Response) => {
     where: {
       email: normalizedEmail,
     },
+    include: { addresses: true },
   });
 
   if (!existingUser) {
