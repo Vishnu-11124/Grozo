@@ -76,6 +76,7 @@ export const registerUser = asyncHandler(
 
 export const loginUser = asyncHandler(async (req: Request, res: Response) => {
   const { email, password } = req.body;
+
   if (!email || !password) {
     throw new ApiError(400, "Please provide required fields");
   }
@@ -87,24 +88,25 @@ export const loginUser = asyncHandler(async (req: Request, res: Response) => {
   }
 
   const existingUser = await prisma.user.findUnique({
-    where: { email: normalizedEmail },
+    where: {
+      email: normalizedEmail,
+    },
   });
+
   if (!existingUser) {
-    throw new ApiError(400, "User doesn't exists with this email");
+    throw new ApiError(401, "Invalid email or password");
   }
 
-  const passwordMatch = await bcrypt.compare(
-    password.trim(),
-    existingUser.password,
-  );
+  const passwordMatch = await bcrypt.compare(password, existingUser.password);
 
   if (!passwordMatch) {
-    throw new ApiError(404, "The password doesn't match");
+    throw new ApiError(401, "Invalid email or password");
   }
 
   const token = generateToken(existingUser.id);
 
   const { password: _, ...userData } = existingUser;
+
   const userDetails = {
     ...userData,
     token,
@@ -112,5 +114,5 @@ export const loginUser = asyncHandler(async (req: Request, res: Response) => {
 
   res
     .status(200)
-    .json(new ApiResponse(200, userDetails, "User login successfully"));
+    .json(new ApiResponse(200, userDetails, "User logged in successfully"));
 });
