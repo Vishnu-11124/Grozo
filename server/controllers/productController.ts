@@ -2,9 +2,10 @@ import { Request, Response } from "express";
 import asyncHandler from "../utils/asyncHandler.js";
 import { prisma } from "../config/prisma.js";
 import ApiResponse from "../utils/ApiResponse.js";
+import ApiError from "../utils/ApiError.js";
 
-
-export const getFlashDeals = asyncHandler(async (req: Request, res: Response) => {
+export const getFlashDeals = asyncHandler(
+  async (req: Request, res: Response) => {
     const products = await prisma.product.findMany({
       where: {
         stock: {
@@ -111,3 +112,44 @@ export const getProducts = asyncHandler(async (req: Request, res: Response) => {
     ),
   );
 });
+
+export const getSingleProduct = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    if (!id || Array.isArray(id)) {
+      throw new ApiError(400, "Product id is required");
+    }
+
+    const product = await prisma.product.findUnique({
+      where: { id },
+    });
+
+    if (!product) {
+      throw new ApiError(404, "Product not found");
+    }
+
+    const discount =
+      product.originalPrice && product.price
+        ? Math.round(
+            ((product.originalPrice - product.price) / product.originalPrice) *
+              100,
+          )
+        : 0;
+
+    const productDetails = {
+      ...product,
+      discount,
+    };
+
+    res
+      .status(200)
+      .json(
+        new ApiResponse(
+          200,
+          { product: productDetails },
+          "Successfully fetched product details",
+        ),
+      );
+  },
+);
